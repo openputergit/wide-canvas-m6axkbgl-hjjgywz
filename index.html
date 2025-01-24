@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone Number Verification</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #e0f2fe;
+        }
+        .clay-container {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 
+                8px 8px 16px rgba(163, 177, 198, 0.6),
+                -8px -8px 16px rgba(255, 255, 255, 0.8),
+                inset 2px 2px 4px rgba(163, 177, 198, 0.2),
+                inset -2px -2px 4px rgba(255, 255, 255, 0.5);
+        }
+        .clay-input {
+            background: #f0f9ff;
+            border-radius: 12px;
+            box-shadow: 
+                inset 2px 2px 4px rgba(163, 177, 198, 0.4),
+                inset -2px -2px 4px rgba(255, 255, 255, 0.7);
+        }
+        .clay-button {
+            background: #0ea5e9;
+            border-radius: 12px;
+            box-shadow: 
+                6px 6px 12px rgba(163, 177, 198, 0.4),
+                -6px -6px 12px rgba(255, 255, 255, 0.8),
+                inset 1px 1px 2px rgba(255, 255, 255, 0.3);
+            transition: all 0.2s ease;
+        }
+        .clay-button:active {
+            box-shadow: 
+                inset 4px 4px 8px rgba(0, 0, 0, 0.2),
+                inset -4px -4px 8px rgba(255, 255, 255, 0.1);
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="clay-container w-full max-w-md p-8">
+        <div id="connectionStatus" class="text-center mb-8">
+            <i class="bi bi-reception-4 text-2xl text-green-500 mr-2"></i>
+            <span class="text-green-600 font-medium">Checking server connection...</span>
+        </div>
+
+        <div class="space-y-6">
+            <div>
+                <label for="phoneNumber" class="block text-gray-700 mb-2">Phone Number</label>
+                <input type="tel" 
+                       id="phoneNumber" 
+                       class="clay-input w-full px-4 py-3 text-lg text-gray-700 placeholder-gray-400 focus:outline-none" 
+                       placeholder="Enter your 10-digit phone number"
+                       maxlength="10"
+                       pattern="[0-9]{10}">
+                <p id="errorMessage" class="text-red-500 text-sm mt-1 hidden">Please enter a valid 10-digit phone number</p>
+            </div>
+
+            <button id="saveButton" 
+                    class="clay-button w-full py-3 text-white font-medium text-lg hover:bg-sky-600 active:bg-sky-700">
+                Save
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const connectionStatus = document.getElementById('connectionStatus');
+            const phoneInput = document.getElementById('phoneNumber');
+            const saveButton = document.getElementById('saveButton');
+            const errorMessage = document.getElementById('errorMessage');
+
+            // Simulate connection check
+            setTimeout(() => {
+                const statusText = connectionStatus.querySelector('span');
+                statusText.textContent = 'Connected to server';
+            }, 2000);
+
+            // Phone number validation
+            phoneInput.addEventListener('input', (e) => {
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                validatePhoneNumber();
+            });
+
+            function validatePhoneNumber() {
+                const phoneNumber = phoneInput.value;
+                const isValid = /^\d{10}$/.test(phoneNumber);
+                
+                errorMessage.classList.toggle('hidden', isValid);
+                saveButton.disabled = !isValid;
+                saveButton.style.opacity = isValid ? '1' : '0.5';
+                
+                return isValid;
+            }
+
+            saveButton.addEventListener('click', () => {
+                if (validatePhoneNumber()) {
+                    saveButton.innerHTML = '<i class="bi bi-check2"></i> Saved';
+                    saveButton.classList.add('bg-green-500');
+                    phoneInput.disabled = true;
+                    
+                    // Reset after 2 seconds
+                    setTimeout(() => {
+                        saveButton.innerHTML = 'Save';
+                        saveButton.classList.remove('bg-green-500');
+                        phoneInput.disabled = false;
+                        phoneInput.value = '';
+                    }, 2000);
+                }
+            });
+        });
+    </script>
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>
